@@ -1,0 +1,15 @@
+{
+  "name": "chat-box",
+  "version": "1.0.0",
+  "description": "Sample Chat Application Demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rajiv Tiwari",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "socket.io": "^2.0.1"
+  }
+}
