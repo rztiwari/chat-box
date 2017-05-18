@@ -4,6 +4,7 @@
   "description": "Sample Chat Application Demo",
   "main": "index.js",
   "scripts": {
+    "build": "NODE_ENV=production",
     "start": "node index.js"
   },
   "author": "Rajiv Tiwari",
