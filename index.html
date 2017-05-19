@@ -44,8 +44,12 @@
   <body>
     <div id="userContainer"><h2>Welcome: <span id="userName"></span></h2></div>
     <div style="display: inline-block;">
-    <ul id="messages" style="display: inline-block; width: 80%"></ul>
-    <ul id="users" style="display: inline-block; width: 15%"></ul>
+      <div style="display: inline-block; min-width: 80%'; float: left">
+        <ul id="messages"></ul>
+      </div>
+      <div style="display: inline-block; float: right">
+        <ul id="users"></ul>
+      </div>
     <div>
     <form id="login" action="POST">
       <input id="name" autocomplete="off" /><button>Join Chat</button>
