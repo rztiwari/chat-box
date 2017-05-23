@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title Socket.IO chat
+  |
+  body
+    form#loginForm(action='login', method='POST')
+      div(style="margin-top: 20px;")
+        label(for='login' style="float: left; padding-left: 10px; width: 10%;")
+        |Login
+        input#login(autocomplete='off', type='text', style='margin-left: 10px;', name='loginName')
+      |
+      div(style="margin-top: 20px; ")
+        label(for='password' style="float: left; padding-left: 10px; width: 10%;")
+        |Password
+        input#password(autocomplete='off', type='password', style='margin-left: 10px;', name='password')
+      |
+      button Login
