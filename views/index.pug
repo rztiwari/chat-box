@@ -2,8 +2,32 @@ doctype html
 html
   head
     title Socket.IO chat
+    |
+    style.
+      #chatText {padding-left: 20px; padding-right: 5px;}
+      button { margin-top: 20px;}
+      a {margin-top: 20px;}
+      #loginLink{padding-left: 20px;}
+      #message {color: red};
+    |
+    script(src='jquery-1.11.1.min.js')
+    |
+    script.
+      $(function () {
+        $('#registerForm').hide();
+        $('#registerLink').click(function(){
+          $('#loginForm').hide();
+          $('#registerForm').show();
+        });
+        $('#loginLink').click(function(){
+        $('#loginForm').show();
+        $('#registerForm').hide();
+        });
+      });
+    |
   |
   body
+    div#message=message
     form#loginForm(action='login', method='POST')
       div(style="margin-top: 20px;")
         label(for='login' style="float: left; padding-left: 10px; width: 10%;")
@@ -16,3 +40,33 @@ html
         input#password(autocomplete='off', type='password', style='margin-left: 10px;', name='password')
       |
       button Login
+      |
+      span#chatText Can't chat?
+      a#registerLink(href="javascript:void(0);") Register
+      |
+    |
+    form#registerForm(action='register', method='POST')
+      div(style="margin-top: 20px;")
+        label(for='userName' style="float: left; padding-left: 10px; width: 10%;")
+        |User name
+        input#userName(autocomplete='off', type='text', style='margin-left: 10px;', name='userName')
+      |
+      div(style="margin-top: 20px; ")
+        label(for='email' style="float: left; padding-left: 10px; width: 10%;")
+        |Email
+        input#email(autocomplete='off', type='email', style='margin-left: 10px;', name='email')
+      |
+      div(style="margin-top: 20px; ")
+        label(for='password' style="float: left; padding-left: 10px; width: 10%;")
+        |Password
+        input#password(autocomplete='off', type='password', style='margin-left: 10px;', name='password')
+      |
+      div(style="margin-top: 20px; ")
+        label(for='confirmPassword' style="float: left; padding-left: 10px; width: 10%;")
+        |Confirm password
+        input#confirmPassword(autocomplete='off', type='password', style='margin-left: 10px;', name='confirmPassword')
+      |
+      button Register
+      a#loginLink(href="javascript:void(0);") Login
+      |
+    |

@@ -32,8 +32,26 @@ app.get('/', function(req, res){
 });
 
 app.post('/login', function(req, res){
-  io.emit('user joined', req.body.loginName);
-  res.render('chat', {userName: req.body.loginName});
+  let userName = req.body.loginName,
+      password = req.body.password;
+  if(userName === 'rajiv' && password === 'password'){
+    io.emit('user joined', req.body.loginName);
+    res.render('chat', {userName: req.body.loginName});
+  }else{
+    res.render('index', {message: 'Login failed! Please try again.'});
+  }
+});
+
+app.post('/register', function(req, res){
+  let userName = req.body.userName,
+      password = req.body.password,
+      confirmPassword = req.body.confirmPassword,
+      email = req.body.email;
+  if(userName === 'rajiv' && password === confirmPassword){
+    res.render('index', {message: 'Registration successful! Please login again.'});
+  }else{
+    res.render('index', {message: 'Registration failed! Please try again.'});
+  }
 });
 
 // Socket connection and chat logic
