@@ -14,7 +14,11 @@ html
     |
     script.
       $(function () {
+      if($('#registerId').html() == 'true'){
+        $('#loginForm').hide();
+      } else {
         $('#registerForm').hide();
+      }
         $('#registerLink').click(function(){
           $('#loginForm').hide();
           $('#registerForm').show();
@@ -28,6 +32,7 @@ html
   |
   body
     div#message=message
+    span#registerId(style="display:none;")=registration
     form#loginForm(action='login', method='POST')
       div(style="margin-top: 20px;")
         label(for='login' style="float: left; padding-left: 10px; width: 10%;")

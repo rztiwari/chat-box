@@ -47,10 +47,10 @@ app.post('/register', function(req, res){
       password = req.body.password,
       confirmPassword = req.body.confirmPassword,
       email = req.body.email;
-  if(userName === 'rajiv' && password === confirmPassword){
+  if(password === confirmPassword){
     res.render('index', {message: 'Registration successful! Please login again.'});
   }else{
-    res.render('index', {message: 'Registration failed! Please try again.'});
+    res.render('index', {message: 'Registration failed! Please try again.', registration: true});
   }
 });
 
