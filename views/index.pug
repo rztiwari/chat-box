@@ -4,11 +4,17 @@ html
     title Socket.IO chat
     |
     style.
+      body{margin:0;}
       #chatText {padding-left: 20px; padding-right: 5px;}
       button { margin-top: 20px;}
+      form {padding: 20px 100px;}
       a {margin-top: 20px;}
       #loginLink{padding-left: 20px;}
-      #message {color: red};
+      #message {color: red;}
+      body {font-size: 1.2em;}
+      div#content {background-color: #f0f0f0; bottom: 50px; top: 100px; position: absolute; width: 100%;}
+      div#footer {background-color: #0F4155; bottom: 0px; position: absolute; height: 50px; width: 100%; color: white; font-size: 1.2em; padding-top: 15px;}
+      div#footer span {margin: 0px 100px 0px 25px;}
     |
     script(src='jquery-1.11.1.min.js')
     |
@@ -31,47 +37,57 @@ html
     |
   |
   body
-    div#message=message
-    span#registerId(style="display:none;")=registration
-    form#loginForm(action='login', method='POST')
-      div(style="margin-top: 20px;")
-        label(for='login' style="float: left; padding-left: 10px; width: 10%;")
-        |Login
-        input#login(autocomplete='off', type='text', style='margin-left: 10px;', name='loginName')
+    div
+      image(src="Capgemini_logo.png" style="margin: 20px 0px 20px 100px; width: 200px;")
+    |
+    div#content(style="border-top:2px solid #D8D8D8;")
+      image(src="comma-white.png" style="margin: -2px 0px 0px 100px")
+      div#message=message
+      span#registerId(style="display:none;")=registration
+      form#loginForm(action='login', method='POST')
+        div(style="margin-top: 20px;")
+          label(for='login' style="float: left; padding-left: 10px; width: 20%;") Login
+          |
+          input#login(autocomplete='off', type='text', style='margin-left: 10px;', name='loginName')
+        |
+        div(style="margin-top: 20px; ")
+          label(for='password' style="float: left; padding-left: 10px; width: 20%;") Password
+          |
+          input#password(autocomplete='off', type='password', style='margin-left: 10px;', name='password')
+        |
+        button Login
+        |
+        span#chatText Can't chat?
+        a#registerLink(href="javascript:void(0);") Register
+        |
       |
-      div(style="margin-top: 20px; ")
-        label(for='password' style="float: left; padding-left: 10px; width: 10%;")
-        |Password
-        input#password(autocomplete='off', type='password', style='margin-left: 10px;', name='password')
-      |
-      button Login
-      |
-      span#chatText Can't chat?
-      a#registerLink(href="javascript:void(0);") Register
+      form#registerForm(action='register', method='POST')
+        div(style="margin-top: 20px;")
+          label(for='userName' style="float: left; padding-left: 10px; width: 20%;") User name
+          |
+          input#userName(autocomplete='off', type='text', style='margin-left: 10px;', name='userName')
+        |
+        div(style="margin-top: 20px; ")
+          label(for='email' style="float: left; padding-left: 10px; width: 20%;") Email
+          |
+          input#email(autocomplete='off', type='email', style='margin-left: 10px;', name='email')
+        |
+        div(style="margin-top: 20px; ")
+          label(for='password' style="float: left; padding-left: 10px; width: 20%;") Password
+          |
+          input#password(autocomplete='off', type='password', style='margin-left: 10px;', name='password')
+        |
+        div(style="margin-top: 20px; ")
+          label(for='confirmPassword' style="float: left; padding-left: 10px; width: 20%;") Confirm password
+          |
+          input#confirmPassword(autocomplete='off', type='password', style='margin-left: 10px;', name='confirmPassword')
+        |
+        button Register
+        a#loginLink(href="javascript:void(0);") Login
+        |
       |
     |
-    form#registerForm(action='register', method='POST')
-      div(style="margin-top: 20px;")
-        label(for='userName' style="float: left; padding-left: 10px; width: 10%;")
-        |User name
-        input#userName(autocomplete='off', type='text', style='margin-left: 10px;', name='userName')
-      |
-      div(style="margin-top: 20px; ")
-        label(for='email' style="float: left; padding-left: 10px; width: 10%;")
-        |Email
-        input#email(autocomplete='off', type='email', style='margin-left: 10px;', name='email')
-      |
-      div(style="margin-top: 20px; ")
-        label(for='password' style="float: left; padding-left: 10px; width: 10%;")
-        |Password
-        input#password(autocomplete='off', type='password', style='margin-left: 10px;', name='password')
-      |
-      div(style="margin-top: 20px; ")
-        label(for='confirmPassword' style="float: left; padding-left: 10px; width: 10%;")
-        |Confirm password
-        input#confirmPassword(autocomplete='off', type='password', style='margin-left: 10px;', name='confirmPassword')
-      |
-      button Register
-      a#loginLink(href="javascript:void(0);") Login
-      |
+    div#footer
+      span#footer1 People matter, results count.
+      span#footer2 @Copyright: Capgemini FS 2017
     |

@@ -5,6 +5,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
 
+var colours = ['red', 'blue', 'green', 'black', 'red', 'brown'];
+var count = 0;
+
 // PORT
 var PORT = process.env.PORT || 3001;
 
@@ -36,7 +39,11 @@ app.post('/login', function(req, res){
       password = req.body.password;
   if(userName === 'rajiv' && password === 'password'){
     io.emit('user joined', req.body.loginName);
-    res.render('chat', {userName: req.body.loginName});
+    res.render('chat', {userName: req.body.loginName, color: colours[count]});
+    count++;
+    if(count === 6){
+      count = 0;
+    }
   }else{
     res.render('index', {message: 'Login failed! Please try again.'});
   }
