@@ -5,7 +5,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
 
-var colours = ['red', 'blue', 'green', 'black', 'red', 'brown'];
+var colours = ['red', 'blue', 'green', 'black', 'orange', 'brown'];
 var count = 0;
 
 // PORT
