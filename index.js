@@ -6,7 +6,7 @@ var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
 var fs = require('fs');
 
-var colours = ['red', 'blue', 'green', 'black', 'red', 'brown'];
+var colours = ['red', 'blue', 'green', 'black', 'orange', 'brown'];
 var count = 0;
 
 // PORT
