@@ -4,6 +4,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
 var colours = ['red', 'blue', 'green', 'black', 'red', 'brown'];
 var count = 0;
@@ -34,29 +35,57 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
-app.post('/login', function(req, res){
-  let userName = req.body.loginName,
-      password = req.body.password;
-  if(userName === 'rajiv' && password === 'password'){
-    io.emit('user joined', req.body.loginName);
-    res.render('chat', {userName: req.body.loginName, color: colours[count]});
-    count++;
-    if(count === 6){
-      count = 0;
+function userExists(data, userName, password){
+  var users, i, user, userData,
+    str = data || '',
+    usrNam, pass, match = false;
+  users = str.split('~');
+  for(i = 0; i < users.length; i++){
+    user = users[i];
+    userData = user.split('|');
+    if(userData && userData.length > 0){
+      usrNam = userData[0];
+      pass = userData[1];
+      if(usrNam === userName && pass === password){
+        match = true;
+        break;
+      }
     }
-  }else{
-    res.render('index', {message: 'Login failed! Please try again.'});
   }
+  return match;
+}
+
+app.post('/login', function(req, res){
+  var userName = req.body.loginName,
+      password = req.body.password;
+  fs.readFile('users.txt', 'utf8', function(err, data) {
+    if (err) throw err;
+    if(userName && password && userExists(data, userName, password)){
+      io.emit('user joined', req.body.loginName);
+      res.render('chat', {userName: req.body.loginName, color: colours[count]});
+      count++;
+      if(count === 6){
+        count = 0;
+      }
+    }else{
+      res.render('index', {message: 'Login failed! Please try again.'});
+    }
+  });
 });
 
 app.post('/register', function(req, res){
-  let userName = req.body.userName,
+  var userName = req.body.userName,
       password = req.body.password,
       confirmPassword = req.body.confirmPassword,
-      email = req.body.email;
+      email = req.body.email,
+      data;
   if(password === confirmPassword){
-    res.render('index', {message: 'Registration successful! Please login again.'});
-  }else{
+    data = '~' + userName + '|' + password + '|' + email;
+    fs.appendFile('users.txt', data, function(err) {
+      if (err) throw err;
+      res.render('index', {message: 'Registration successful! Please login again.'});
+    });
+  } else {
     res.render('index', {message: 'Registration failed! Please try again.', registration: true});
   }
 });
