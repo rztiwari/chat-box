@@ -35,10 +35,10 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
-function userExists(data, userName, password){
+function getUserName(data, userName, password){
   var users, i, user, userData,
     str = data || '',
-    usrNam, pass, match = false;
+    usrNam, pass, match;
   users = str.split('~');
   for(i = 0; i < users.length; i++){
     user = users[i];
@@ -47,7 +47,7 @@ function userExists(data, userName, password){
       usrNam = userData[0];
       pass = userData[1];
       if(usrNam === userName && pass === password){
-        match = true;
+        match = userData[3];
         break;
       }
     }
@@ -57,12 +57,14 @@ function userExists(data, userName, password){
 
 app.post('/login', function(req, res){
   var userName = req.body.loginName,
-      password = req.body.password;
+      password = req.body.password,
+      fullName;
   fs.readFile('users.txt', 'utf8', function(err, data) {
     if (err) throw err;
-    if(userName && password && userExists(data, userName, password)){
-      io.emit('user joined', req.body.loginName);
-      res.render('chat', {userName: req.body.loginName, color: colours[count]});
+    fullName = getUserName(data, userName, password);
+    if(userName && password && fullName){
+      io.emit('user joined', fullName);
+      res.render('chat', {userName: fullName, color: colours[count]});
       count++;
       if(count === 6){
         count = 0;
@@ -78,9 +80,10 @@ app.post('/register', function(req, res){
       password = req.body.password,
       confirmPassword = req.body.confirmPassword,
       email = req.body.email,
+      fullName = req.body.fullName,
       data;
   if(password === confirmPassword){
-    data = '~' + userName + '|' + password + '|' + email;
+    data = '~' + userName + '|' + password + '|' + email + '|' + fullName;
     fs.appendFile('users.txt', data, function(err) {
       if (err) throw err;
       res.render('index', {message: 'Registration successful! Please login again.'});
