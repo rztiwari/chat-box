@@ -5,6 +5,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
 var fs = require('fs');
+var LoginService = require('./service/login');
 
 var colours = ['red', 'blue', 'green', 'black', 'orange', 'brown'];
 var count = 0;
@@ -20,7 +21,7 @@ app.use(express.static('public'));
  * and exposes the resulting object (containing the keys and values) on req.body
  */
 app.use(bodyParser.urlencoded({
-    extended: true
+  extended: true
 }));
 /**bodyParser.json(options)
  * Parses the text as JSON and exposes the resulting object on req.body.
@@ -31,22 +32,22 @@ app.use(bodyParser.json());
 app.set('view engine', 'pug');
 
 // Base/ index routing
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
   res.render('index');
 });
 
-function getUserName(data, userName, password){
+function getUserName(data, userName, password) {
   var users, i, user, userData,
     str = data || '',
     usrNam, pass, match;
   users = str.split('~');
-  for(i = 0; i < users.length; i++){
+  for (i = 0; i < users.length; i++) {
     user = users[i];
     userData = user.split('|');
-    if(userData && userData.length > 0){
+    if (userData && userData.length > 0) {
       usrNam = userData[0];
       pass = userData[1];
-      if(usrNam === userName && pass === password){
+      if (usrNam === userName && pass === password) {
         match = userData[3];
         break;
       }
@@ -55,52 +56,86 @@ function getUserName(data, userName, password){
   return match;
 }
 
-app.post('/login', function(req, res){
+app.post('/login', function(req, res) {
   var userName = req.body.loginName,
-      password = req.body.password,
-      fullName;
-  fs.readFile('users.txt', 'utf8', function(err, data) {
-    if (err) throw err;
-    fullName = getUserName(data, userName, password);
-    if(userName && password && fullName){
+    password = req.body.password,
+    fullName, user, options = {};
+  // fs.readFile('users.txt', 'utf8', function(err, data) {
+  //   if (err) throw err;
+  //   fullName = getUserName(data, userName, password);
+  //   if(userName && password && fullName){
+  //     io.emit('user joined', fullName);
+  //     res.render('chat', {userName: fullName, color: colours[count]});
+  //     count++;
+  //     if(count === 6){
+  //       count = 0;
+  //     }
+  //   }else{
+  //     res.render('index', {message: 'Login failed! Please try again.'});
+  //   }
+  // });
+  options.userName = userName;
+  options.password = password;
+  LoginService.findUser(options, function(err, user) {
+    if (err) {
+      res.render('index', {
+        message: 'Login failed! Please try again.'
+      });
+    } else {
+      fullName = user.fullName;
       io.emit('user joined', fullName);
-      res.render('chat', {userName: fullName, color: colours[count]});
+      res.render('chat', {
+        userName: fullName,
+        color: colours[count]
+      });
       count++;
-      if(count === 6){
+      if (count === 6) {
         count = 0;
       }
-    }else{
-      res.render('index', {message: 'Login failed! Please try again.'});
     }
   });
 });
 
-app.post('/register', function(req, res){
+app.post('/register', function(req, res) {
   var userName = req.body.userName,
-      password = req.body.password,
-      confirmPassword = req.body.confirmPassword,
-      email = req.body.email,
-      fullName = req.body.fullName,
-      data;
-  if(password === confirmPassword){
-    data = '~' + userName + '|' + password + '|' + email + '|' + fullName;
-    fs.appendFile('users.txt', data, function(err) {
+    password = req.body.password,
+    confirmPassword = req.body.confirmPassword,
+    email = req.body.email,
+    fullName = req.body.fullName,
+    data,
+    options = {};
+  if (password === confirmPassword) {
+    // data = '~' + userName + '|' + password + '|' + email + '|' + fullName;
+    // fs.appendFile('users.txt', data, function(err) {
+    //   if (err) throw err;
+    //   res.render('index', {message: 'Registration successful! Please login again.'});
+    // });
+    options.userName = userName;
+    options.password = password;
+    options.email = email;
+    options.fullName = fullName;
+    LoginService.insertUser(options, function(err, message) {
       if (err) throw err;
-      res.render('index', {message: 'Registration successful! Please login again.'});
+      res.render('index', {
+        message: 'Registration successful! Please login again.'
+      });
     });
   } else {
-    res.render('index', {message: 'Registration failed! Please try again.', registration: true});
+    res.render('index', {
+      message: 'Registration failed! Please try again.',
+      registration: true
+    });
   }
 });
 
 // Socket connection and chat logic
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
+io.on('connection', function(socket) {
+  socket.on('chat message', function(msg) {
     io.emit('chat message', msg);
   });
 });
 
 // http port listning
-http.listen(PORT, function(){
+http.listen(PORT, function() {
   console.log('listening on port ' + PORT);
 });

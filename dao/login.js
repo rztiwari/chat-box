@@ -1,11 +1,13 @@
 var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/test');
 var Schema = mongoose.Schema;
 
 // create a schema
 var userSchema = new Schema({
-  name: String,
-  username: { type: String, required: true, unique: true },
+  fullName: String,
+  userName: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  email: {type: String},
   created_at: Date,
 });
 
