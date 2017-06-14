@@ -4,9 +4,19 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
+
+//Application Imports - Here service imports
 var LoginService = require('./service/fileLogin');
 
-var colours = ['red', 'blue', 'green', 'black', 'orange', 'brown'];
+// Applying different colors to the user to differentiate them
+var colours = [
+  'red',
+  'blue',
+  'green',
+  'black',
+  'orange',
+  'brown'
+];
 var count = 0;
 
 // PORT
@@ -19,9 +29,7 @@ app.use(express.static('public'));
  * Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST)
  * and exposes the resulting object (containing the keys and values) on req.body
  */
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}));
 /**bodyParser.json(options)
  * Parses the text as JSON and exposes the resulting object on req.body.
  */
@@ -30,23 +38,27 @@ app.use(bodyParser.json());
 //Set view engine as pug.
 app.set('view engine', 'pug');
 
-// Base/ index routing
+/* Base index routing
+Routes to the home page - In this case the login page*/
 app.get('/', function(req, res) {
   res.render('index');
 });
 
+/* Login API
+Log in the user and if the process is successful
+connect the user to the current chat instance */
 app.post('/login', function(req, res) {
   var userName = req.body.loginName,
     password = req.body.password,
-    fullName, user, options = {};
+    fullName,
+    user,
+    options = {};
 
   options.userName = userName;
   options.password = password;
   LoginService.findUser(options, function(err, user) {
     if (err) {
-      res.render('index', {
-        message: 'Login failed! Please try again.'
-      });
+      res.render('index', {message: 'Login failed! Please try again.'});
     } else {
       fullName = user.fullName;
       io.emit('user joined', fullName);
@@ -62,6 +74,9 @@ app.post('/login', function(req, res) {
   });
 });
 
+/*Registration API
+Any user registered can log in back to the application
+to connect to the current chat instance*/
 app.post('/register', function(req, res) {
   var userName = req.body.userName,
     password = req.body.password,
@@ -75,10 +90,9 @@ app.post('/register', function(req, res) {
     options.email = email;
     options.fullName = fullName;
     LoginService.insertUser(options, function(err, message) {
-      if (err) throw err;
-      res.render('index', {
-        message: 'Registration successful! Please login again.'
-      });
+      if (err)
+        throw err;
+      res.render('index', {message: 'Registration successful! Please login again.'});
     });
   } else {
     res.render('index', {

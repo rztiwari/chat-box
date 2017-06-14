@@ -1,7 +1,18 @@
+//All imports
 var fs = require('fs');
 
+//Define service
 var LoginService = {};
 
+//Define service methods
+
+/* Note: All operations are asynchronous
+We could do the operations synchronously but that could hang the process,
+till the read/ write operation ends, thus slowing down the response*/
+
+/**@insertUser - writes the new user into the file system
+After successful write call the callback
+On failure - callback is called with error.*/
 LoginService.insertUser = function(options, callback) {
   var data = '~' + options.userName + '|' +
     options.password + '|' +
@@ -13,6 +24,9 @@ LoginService.insertUser = function(options, callback) {
   });
 };
 
+/**@findUser - Find the user from the provided credentials
+Parse the file system to read the credentials - if matched pass the user
+On failure - callback is called with error.*/
 LoginService.findUser = function(options, callback) {
   fs.readFile('users.txt', 'utf8', function(err, data) {
     if (err) {
@@ -28,6 +42,9 @@ LoginService.findUser = function(options, callback) {
   });
 };
 
+// Helper function
+// Note - This function has not be exposed to the world
+// Encapsulation pattern
 function getUser(data, userName, password) {
   var users, i, user, userData,
     str = data || '',
@@ -40,6 +57,7 @@ function getUser(data, userName, password) {
       usrNam = userData[0];
       pass = userData[1];
       if (usrNam === userName && pass === password) {
+        // Create the user object back
         match = {};
         match.userName = usrNam;
         match.password = pass;
@@ -52,4 +70,5 @@ function getUser(data, userName, password) {
   return match;
 }
 
+//Export the service
 module.exports = LoginService;

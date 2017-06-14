@@ -1,5 +1,9 @@
+//All imports
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+
+//Connect mongoose to a perticular schema/ collection - in this case chatbox
+mongoose.connect('mongodb://localhost/chatbox');
+
 var Schema = mongoose.Schema;
 
 // create a schema
@@ -10,8 +14,6 @@ var userSchema = new Schema({
   email: {type: String},
   created_at: Date,
 });
-
-
 
 // the schema is useless so far
 // we need to create a model using it
