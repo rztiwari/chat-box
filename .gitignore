@@ -1,2 +1,5 @@
 #ignore folder
 node_modules
+
+#ignore file
+users.txt

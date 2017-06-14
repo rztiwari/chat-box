@@ -4,8 +4,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
-var fs = require('fs');
-var LoginService = require('./service/login');
+var LoginService = require('./service/fileLogin');
 
 var colours = ['red', 'blue', 'green', 'black', 'orange', 'brown'];
 var count = 0;
@@ -36,44 +35,11 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
-function getUserName(data, userName, password) {
-  var users, i, user, userData,
-    str = data || '',
-    usrNam, pass, match;
-  users = str.split('~');
-  for (i = 0; i < users.length; i++) {
-    user = users[i];
-    userData = user.split('|');
-    if (userData && userData.length > 0) {
-      usrNam = userData[0];
-      pass = userData[1];
-      if (usrNam === userName && pass === password) {
-        match = userData[3];
-        break;
-      }
-    }
-  }
-  return match;
-}
-
 app.post('/login', function(req, res) {
   var userName = req.body.loginName,
     password = req.body.password,
     fullName, user, options = {};
-  // fs.readFile('users.txt', 'utf8', function(err, data) {
-  //   if (err) throw err;
-  //   fullName = getUserName(data, userName, password);
-  //   if(userName && password && fullName){
-  //     io.emit('user joined', fullName);
-  //     res.render('chat', {userName: fullName, color: colours[count]});
-  //     count++;
-  //     if(count === 6){
-  //       count = 0;
-  //     }
-  //   }else{
-  //     res.render('index', {message: 'Login failed! Please try again.'});
-  //   }
-  // });
+
   options.userName = userName;
   options.password = password;
   LoginService.findUser(options, function(err, user) {
@@ -102,14 +68,8 @@ app.post('/register', function(req, res) {
     confirmPassword = req.body.confirmPassword,
     email = req.body.email,
     fullName = req.body.fullName,
-    data,
     options = {};
   if (password === confirmPassword) {
-    // data = '~' + userName + '|' + password + '|' + email + '|' + fullName;
-    // fs.appendFile('users.txt', data, function(err) {
-    //   if (err) throw err;
-    //   res.render('index', {message: 'Registration successful! Please login again.'});
-    // });
     options.userName = userName;
     options.password = password;
     options.email = email;
